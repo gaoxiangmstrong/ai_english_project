@@ -7,4 +7,4 @@
 
 
 # 简单的user_flow
-![Untitled Diagram drawio (1)](https://github.com/gaoxiangmstrong/ai_english_project/assets/85563264/6c51bf69-fadb-4667-a244-5f9d0926053f)
+![user-flow drawio](https://github.com/gaoxiangmstrong/ai_english_project/assets/85563264/9e2aebff-617f-4f17-8cc7-8bbdbb837c93)
