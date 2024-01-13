@@ -6,3 +6,5 @@
 5. 画出大概的用户使用流程以及数据流动图
 
 
+# 简单的user_flow
+https://app.diagrams.net/?client=1
