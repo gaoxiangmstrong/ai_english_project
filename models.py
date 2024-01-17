@@ -27,6 +27,15 @@ class User(db.Model):
   username: Mapped[str] = mapped_column(String, unique=True, nullable=False)
   password: Mapped[str] = mapped_column(String, nullable=False)
 
+  def serialize(self):
+     return {
+        "id": self.id,
+        "name": self.name,
+        "email": self.email,
+        "username": self.username,
+        "password": self.password
+     }
+
 # create the table New with id title content category created_at updated_at difficulty
 class NewsPaper(db.Model):
     __tablename__= "newsPapers"
