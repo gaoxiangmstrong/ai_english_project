@@ -6,8 +6,9 @@ from models import db, NewsPaper, User
 # create a function to auth login page
 def process_login():
     """check login"""
-    password = request.form.get("password")
-    email = request.form.get("email")
+    data = request.json # 接受json数据
+    email = data.get("email")
+    password = data.get("password")
     
     # 检查邮箱是否存在以及密码是否正确
     user = User.query.filter_by(email=email).first()
@@ -43,7 +44,7 @@ def process_register():
 
 
 # return user information
-def get_user_info():
+def get_users_info():
     """get user info"""
     users = db.session.execute(db.select(User)).scalars() # get all objects
     return jsonify([user.serialize() for user in users]), 200

@@ -2,7 +2,7 @@
 from flask import Flask, jsonify, render_template, request
 from models import db, NewsPaper, User
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity, jwt_required, JWTManager
-from auth import process_login, process_register, get_user_info
+from auth import process_login, process_register, get_users_info
 from datetime import timedelta
 from flask_cors import CORS
 
@@ -17,8 +17,8 @@ db.init_app(app)
 # 令牌config
 jwt = JWTManager(app)
 app.config['SECRET_KEY'] = 'super-secret'
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=10)
-app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=10) # acess_token终止时间
+app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30) # refresh_token终止时间
 
 
 
@@ -55,10 +55,10 @@ def logout():
    pass
 
 
-@app.route('/user', methods=["GET"])
+@app.route('/users', methods=["GET"])
 @jwt_required()
 def user():
-   return get_user_info()
+   return get_users_info()
 
 
 
