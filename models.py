@@ -1,8 +1,9 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from datetime import datetime
 from sqlalchemy import Integer, String, Text, TIMESTAMP, CheckConstraint
+from flask_migrate import Migrate
 
 
 app = Flask(__name__)
@@ -11,6 +12,7 @@ class Base(DeclarativeBase):
   pass
 
 db = SQLAlchemy(model_class=Base)
+migrate = Migrate(app, db)
 
 # configure the SQLite database, relative to the app instance folder
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///news-reading.db"
@@ -26,6 +28,7 @@ class User(db.Model):
   # 账号和密码/ username and password
   username: Mapped[str] = mapped_column(String, unique=True, nullable=False)
   password: Mapped[str] = mapped_column(String, nullable=False)
+  reads = relationship('Read', back_populates="user")
 
   def serialize(self):
      return {
@@ -46,6 +49,7 @@ class NewsPaper(db.Model):
     created_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now, onupdate=datetime.now)
     difficulty: Mapped[int] = mapped_column(Integer, CheckConstraint('difficulty BETWEEN 1 AND 10'))
+    reads = relationship('Read', back_populates='newsPaper')
     
     # 输出一个字典数据/ return a dictionay data
     def serialize(self):
@@ -61,14 +65,18 @@ class NewsPaper(db.Model):
     
 class Read(db.Model):
     __tablename__ = "reads"
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    user_id: Mapped[int] = mapped_column(Integer)
-    news_id: Mapped[int] = mapped_column(Integer)
-    created_at: Mapped[datetime] = mapped_column(TIMESTAMP, default=datetime.now)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    newsPaper_id = db.Column(db.Integer, db.ForeignKey('newsPapers.id'))
+    created_at = db.Column(db.TIMESTAMP, default=datetime.now)
+    user = relationship('User', back_populates='reads')
+    newsPaper = relationship('NewsPaper', back_populates='reads')
 
 # 创建数据库/create the database tables
 with app.app_context():
    db.create_all()
+
+
 
 # # 创建一个用户/create a dummy user
 # with app.app_context():
@@ -84,12 +92,13 @@ with app.app_context():
 
 # # 关联read的关系/ relates user to newspaper
 # with app.app_context():
-#    read = Read(user_id=1, news_id=1, created_at=datetime.now())
+#    read = Read(user_id=1, newsPaper_id=1, created_at=datetime.now())
 #    db.session.add(read)
 #    db.session.commit()
 
    
-
+# if __name__ == '__main__':
+#     app.run()
 
    
 

@@ -5,7 +5,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, get_jw
 from auth import process_login, process_register, get_users_info
 from datetime import timedelta
 from flask_cors import CORS
-
+from data_access import get_user_newspapers
 
 
 # 连接数据库/connect to db
@@ -53,6 +53,14 @@ def login():
 @app.route('/logout')
 def logout():
    pass
+
+
+# 从/user/<id>/newspapers中获取所有的 newspapers
+@app.route('/user/<int:user_id>/newspapers')
+def user_newspapers(user_id):
+    newspapers = get_user_newspapers(user_id)
+    dic_newspaper = [np.serialize() for np in newspapers]
+    return jsonify(dic_newspaper)
 
 
 @app.route('/users', methods=["GET"])
