@@ -12,12 +12,13 @@ def process_login():
     
     # 检查邮箱是否存在以及密码是否正确
     user = User.query.filter_by(email=email).first()
-    if user and check_password_hash(pwhash=user.password, password=password):
+    print(user.password,user.email)
+    if  user.password == password and user.email == email:
         access_token = create_access_token(identity=email)
         refresh_token = create_refresh_token(identity=email)
         return jsonify(access_token=access_token, refresh_token=refresh_token), 200
     else:
-        return jsonify({"msg":"Invalid credentials"}), 401
+        return jsonify({"msg":"Invalid credentials","code":400}), 200
     
 
 # create a function to register user
