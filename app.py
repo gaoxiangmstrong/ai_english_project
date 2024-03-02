@@ -43,7 +43,7 @@ def refresh():
     return jsonify(access_token=access_token)
 
 
-@app.route('/login', methods=["POST"])
+@app.route('/login', methods=["GET","POST"])
 def login():
     print("-------- request-------------")
     if request.method == "POST":

@@ -12,7 +12,7 @@ def process_login():
     
     # 检查邮箱是否存在以及密码是否正确
     user = User.query.filter_by(email=email).first()
-    print(user.password,user.email)
+
     if  user.password == password and user.email == email:
         access_token = create_access_token(identity=email)
         refresh_token = create_refresh_token(identity=email)
